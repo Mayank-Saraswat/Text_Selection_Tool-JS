@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Selection Tool</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0px;
+      text-align: center;
+    }
+
+    .custom-menu {
+      position: absolute;
+      display: none;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      padding: 8px;
+      z-index: 1000;
+    }
+
+    .twitter-button {
+      cursor: pointer;
+      color: #1da1f2;
+      text-decoration: none;
+      font-size: small;
+      font-weight: bold;
+    }
+
+    .insta-button {
+      cursor: pointer;
+      color: #FE0C61;
+      text-decoration: none;
+      font-size: small;
+      font-weight: bold;
+    }
+
+    .whatsapp-button {
+      cursor: pointer;
+      color: #008069;
+      text-decoration: none;
+      font-size: small;
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 90%;
+      height: 60vh;
+      resize: vertical;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Write your text in below textarea to directly post or use on social media apps</h2>
+  <div class="custom-menu" id="customMenu">
+    <a class="twitter-button" id="twitterButton" target="_blank">Share on Twitter</a>
+    <a class="insta-button" id="instaButton" target="_blank">Share on Instagram</a>
+    <a class="whatsapp-button" id="whatsappButton" target="_blank">Share on Whatsapp</a>
+  </div>
+
+  <article id="article">
+    <textarea id="customTextarea" placeholder="Please write your text here..."></textarea>
+  </article>
+
+  <script>
+    const customMenu = document.getElementById('customMenu');
+    const twitterButton = document.getElementById('twitterButton');
+    const instaButton = document.getElementById('instaButton');
+    const whatsappButton = document.getElementById('whatsappButton');
+    const customTextarea = document.getElementById('customTextarea');
+
+    customTextarea.addEventListener('mouseup', showCustomMenu);
+
+    function showCustomMenu() {
+      const selection = customTextarea.value.substring(customTextarea.selectionStart, customTextarea.selectionEnd);
+      if (selection !== '') {
+        const rect = customTextarea.getBoundingClientRect();
+        showMenuAt(rect);
+        setTwitterButtonUrl(selection);
+        setInstagramButtonUrl(selection);
+        setWhatsappButtonUrl(selection);
+      } else {
+        hideMenu();
+      }
+    }
+
+    function getSelectionRect() {
+      const selection = window.getSelection();
+      if (selection.rangeCount === 0) return;
+
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+
+      return {
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX,
+      };
+    }
+
+    function showMenuAt({ top, left }) {
+      customMenu.style.display = 'block';
+      customMenu.style.top = `${top}px`;
+      customMenu.style.left = `${left}px`;
+    }
+
+    function hideMenu() {
+      customMenu.style.display = 'none';
+    }
+
+    function setTwitterButtonUrl(text) {
+      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      twitterButton.href = tweetUrl;
+    }
+
+    function setInstagramButtonUrl(text) {
+      const instaUrl = `https://www.instagram.com/share?text=${encodeURIComponent(text)}`;
+      instaButton.href = instaUrl;
+    }
+
+    function setWhatsappButtonUrl(text) {
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      whatsappButton.href = whatsappUrl;
+    }
+  </script>
+
+</body>
+
+</html>
